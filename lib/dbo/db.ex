@@ -1,6 +1,6 @@
 defmodule Dbo.DB do
 @moduledoc """
-  Database interface module.  Start connection, Stop connection & query.
+  Database interface module.  Start connection, Stop connection & Query.
 """
   @default_port 5432
   @default_host "localhost"
@@ -44,9 +44,9 @@ defmodule Dbo.DB do
   ##
   @spec query(String.t, String.t, Keyword.t) :: {:ok, Map}
   def query(db, sql, opts) do
-    case Postgrex.Connection.query(db, sql, opts) do
-      {:ok, %Postgrex.Result{} = res}   -> Map.from_struct(res)
-      {:error, %Postgrex.Error{}} = err -> err
+    case Postgrex.Connection.query!(db, sql, opts) do
+      %Postgrex.Result{} = res   -> res
+      %Postgrex.Error{} = err    -> err
     end
   end
 
