@@ -4,16 +4,39 @@ defmodule Dbo.DB.Format do
 """
 
   @doc """
-    RENAME  -  This func will take the Postgrex result, split the cloumn heads & values into JSON keys/vals.
+    Handle result set depending on num_rows returned in the query.
   """
-  @spec something(%{Postgrex.result}) :: JSON.Object # Change this spec to validate.
-  def something(result) do
-    Enum.map(result.rows, fn row ->
-      Enum.zip(result.columns, Tuple.to_list(row))
-      |> Enum.into(%{})
-      |> Poison.encode!
-    end)
+  def handle_results(res) do
+    case res.num_rows do
+      1 ->
+        handle_single_result(res.rows)
+      _ ->
+        handle_multiple(res.rows)  
+    end
   end
+
+
+  def handle_single_result(res) do
+    rr = List.first(res)
+    Tuple.to_list(rr) |> List.first
+    # ya
+  end
+
+
+  def handle_multiple(res) do
+    Enum.map(res, fn (x) -> Tuple.to_list(x) 
+      |> List.first 
+      |> Poison.encode! 
+    end)
+
+  end
+
+
+  def tester(_res) do
+
+
+  end
+
 
   def strip_squares do
 
